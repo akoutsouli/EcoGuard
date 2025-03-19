@@ -68,13 +68,14 @@ st.markdown(
 # App Header & Sidebar
 # --------------------------
 st.title("🌿 EcoGuard AI 🌍")
-st.header("Ένα app, ένας στόχος: ένας καθαρότερος κόσμος!♻🌳")
+st.header("Ένα app, ένας στόχος: ένας καθαρότερος κόσμος! ♻🌳")
 st.write("Καλωσορίσατε στην EcoGuard AI! Επιλέξτε την επιθυμητή λειτουργία από την αριστερή πλευρά.")
 
 st.sidebar.image("https://via.placeholder.com/150x150.png?text=EcoGuard+Logo", use_container_width=True)
+# Sidebar now only contains two sections.
 section = st.sidebar.radio(
     "Επιλογή Λειτουργίας", 
-    ("Ανίχνευση Απόβλητων 🗑️", "Κουίζ Ανακύκλωσης 📝", "Παιχνίδι Block Breaker 🎮")
+    ("Ανίχνευση Απόβλητων 🗑️", "Κουίζ Ανακύκλωσης 📝")
 )
 
 # Define recycling sets
@@ -97,21 +98,17 @@ if section == "Ανίχνευση Απόβλητων 🗑️":
 
     if image:
         st.image(image, caption="Επιλεγμένη Εικόνα", use_container_width=True)
-
         # Model and processor setup
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
         processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-
         candidate_texts = list(recyclable_set | non_recyclable_set)
         inputs = processor(text=candidate_texts, images=image, return_tensors="pt", padding=True).to(device)
         outputs = model(**inputs)
-
         logits_per_image = outputs.logits_per_image
         probs = logits_per_image.softmax(dim=1)
         best_idx = probs.argmax().item()
         best_label = candidate_texts[best_idx]
-
         category = "Ανακυκλώσιμο ♻️" if best_label in recyclable_set else "Μη ανακυκλώσιμο 🚫"
         st.write(f"**Κατηγορία:** {category}")
 
@@ -122,6 +119,7 @@ elif section == "Κουίζ Ανακύκλωσης 📝":
     st.subheader("Κουίζ Ανακύκλωσης 📝")
     st.write("Δοκιμάστε τις γνώσεις σας για την ανακύκλωση! 🌍")
     
+    # Expanded quiz questions list
     questions = [
         {"question": "Ποιο από τα παρακάτω είναι ανακυκλώσιμο;", 
          "options": ["Χαρτί 📄", "Φαγητά 🍲", "Μπαταρίες 🔋", "Οργανικά απόβλητα 🥕"], 
@@ -134,15 +132,21 @@ elif section == "Κουίζ Ανακύκλωσης 📝":
          "answer": "Μπαταρίες 🔋"},
         {"question": "Ποιο από τα παρακάτω υλικά μπορεί να ανακυκλωθεί ξανά και ξανά χωρίς να χάσει την ποιότητά του;", 
          "options": ["Αλουμίνιο 🥫", "Πλαστικό 🥤", "Χαρτί 📄", "Οργανικά απόβλητα 🥕"], 
-         "answer": "Αλουμίνιο 🥫"}
+         "answer": "Αλουμίνιο 🥫"},
+        {"question": "Ποιο υλικό θεωρείται ιδανικό για ανακύκλωση λόγω της υψηλής του αξίας στην αγορά;", 
+         "options": ["Χαρτί 📄", "Αλουμίνιο 🥫", "Πλαστικό 🥤", "Γυαλί 🍷"], 
+         "answer": "Αλουμίνιο 🥫"},
+        {"question": "Γιατί είναι σημαντική η σωστή ταξινόμηση των απορριμμάτων;", 
+         "options": ["Μειώνει τη ρύπανση", "Βελτιώνει την ανακύκλωση", "Ενισχύει τη βιωσιμότητα", "Όλα τα παραπάνω"], 
+         "answer": "Όλα τα παραπάνω"}
     ]
-
+    
     user_answers = {}
     for idx, q in enumerate(questions):
         st.markdown(f"**Ερώτηση {idx+1}:** {q['question']}")
         user_answers[idx] = st.radio("Επιλέξτε την απάντησή σας:", q["options"], key=f"quiz_{idx}")
         st.write("---")
-
+    
     if st.button("Υποβολή Κουίζ 📤"):
         score = sum(1 for idx, q in enumerate(questions) if user_answers[idx] == q["answer"])
         st.success(f"Το σκορ σας: {score} / {len(questions)}")
@@ -151,13 +155,15 @@ elif section == "Κουίζ Ανακύκλωσης 📝":
             st.write(f"Ερώτηση {idx+1}: {q['answer']}")
 
 # --------------------------
-# Section 3: Block Breaker Game
+# Common Button: Play the Game
 # --------------------------
 st.markdown(
     '''
-    <a href="https://akoutsouli.github.io/EcoBreaker/" target="_blank">
-        <button style="padding:10px 20px; font-size:16px;">Παίξε το παιχνίδι</button>
-    </a>
+    <div style="text-align:center; margin-top:20px;">
+        <a href="https://akoutsouli.github.io/EcoBreaker/" target="_blank">
+            <button style="padding:10px 20px; font-size:16px;">Παίξε το παιχνίδι</button>
+        </a>
+    </div>
     ''',
     unsafe_allow_html=True
 )
