@@ -68,8 +68,8 @@ st.markdown(
 # App Header & Sidebar
 # --------------------------
 st.title("🌿 EcoGuard AI 🌍")
-st.header("Ο περιβαλλοντικός σας σύμμαχος! 🌱")
-st.write("Καλωσορίσατε στην EcoGuard AI! Επιλέξτε την επιθυμητή λειτουργία από την αριστερή πλευρά. 😊")
+st.header("Ένα app, ένας στόχος: ένας καθαρότερος κόσμος!♻🌳")
+st.write("Καλωσορίσατε στην EcoGuard AI! Επιλέξτε την επιθυμητή λειτουργία από την αριστερή πλευρά.")
 
 st.sidebar.image("https://via.placeholder.com/150x150.png?text=EcoGuard+Logo", use_container_width=True)
 section = st.sidebar.radio(
@@ -86,17 +86,14 @@ non_recyclable_set = {"organic", "hazardous", "styrofoam", "food waste", "batter
 # --------------------------
 if section == "Ανίχνευση Απόβλητων 🗑️":
     st.subheader("Ανίχνευση Απόβλητων με CLIP (Transformers) 🖼️")
-    st.write("Επιλέξτε αν θέλετε να τραβήξετε φωτογραφία ή να ανεβάσετε μια εικόνα. 📸")
+    st.write("Παρακαλώ ανεβάστε μια εικόνα για ανάλυση. 📸")
     
-    input_method = st.radio("Πηγή Εικόνας", ("Λήψη φωτογραφίας 📷", "Ανέβασμα εικόνας 🖼️"))
-    
+    uploaded_file = st.file_uploader("Επιλέξτε μια εικόνα", type=["png", "jpg", "jpeg"])
     image = None
-    if input_method == "Λήψη φωτογραφίας 📷":
-        image = st.camera_input("Πατήστε το κουμπί για λήψη φωτογραφίας")
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
     else:
-        uploaded_file = st.file_uploader("Επιλέξτε μια εικόνα", type=["png", "jpg", "jpeg"])
-        if uploaded_file:
-            image = Image.open(uploaded_file)
+        st.warning("Παρακαλώ ανεβάστε μια εικόνα για ανάλυση.")
 
     if image:
         st.image(image, caption="Επιλεγμένη Εικόνα", use_container_width=True)
