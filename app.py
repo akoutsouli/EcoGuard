@@ -71,7 +71,7 @@ st.title("🌿 EcoGuard AI 🌍")
 st.header("Ένα app, ένας στόχος: ένας καθαρότερος κόσμος! ♻🌳")
 st.write("Καλωσορίσατε στην EcoGuard AI! Επιλέξτε την επιθυμητή λειτουργία από την αριστερή πλευρά.")
 
-st.sidebar.image("https://via.placeholder.com/150x150.png?text=EcoGuard+Logo", use_container_width=True)
+st.sidebar.image("logo.png", use_container_width=True)
 # Sidebar now only contains two sections.
 section = st.sidebar.radio(
     "Επιλογή Λειτουργίας", 
