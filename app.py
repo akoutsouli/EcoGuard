@@ -100,8 +100,8 @@ if section == "Ανίχνευση Απόβλητων 🗑️":
         st.image(image, caption="Επιλεγμένη Εικόνα", use_container_width=True)
         # Model and processor setup
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
-        processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+        model = CLIPModel.from_pretrained("clip_model").to(device)
+        processor = CLIPProcessor.from_pretrained("clip_processor")
         candidate_texts = list(recyclable_set | non_recyclable_set)
         inputs = processor(text=candidate_texts, images=image, return_tensors="pt", padding=True).to(device)
         outputs = model(**inputs)
