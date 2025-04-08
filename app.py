@@ -3,7 +3,6 @@ from PIL import Image
 import torch
 from transformers import CLIPProcessor, CLIPModel
 import random
-import os
 
 # --------------------------
 # Custom CSS with a nature-inspired theme
@@ -24,6 +23,9 @@ st.markdown(
     p, label, .stMarkdown {
         color: #2e7d32;
     }
+    .css-1d391kg {
+        background: linear-gradient(180deg, #a5d6a7 0%, #81c784 100%);
+    }
     div.stButton > button {
         background-color: #4caf50;
         color: white;
@@ -41,6 +43,23 @@ st.markdown(
         color: #1b5e20;
         font-weight: bold;
     }
+    .stDragDrop {
+        border: 2px dashed #2e7d32;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        margin: 10px 0;
+    }
+    .stSuccess {
+        color: #2e7d32;
+        font-weight: bold;
+        text-align: center;
+    }
+    .stError {
+        color: #d32f2f;
+        font-weight: bold;
+        text-align: center;
+    }
     </style>
     """, unsafe_allow_html=True
 )
@@ -53,12 +72,13 @@ st.header("Ένα app, ένας στόχος: ένας καθαρότερος κ
 st.write("Καλωσορίσατε στην EcoGuard AI! Επιλέξτε την επιθυμητή λειτουργία από την αριστερή πλευρά.")
 
 st.sidebar.image("logo.png", use_container_width=True)
+# Sidebar now only contains two sections.
 section = st.sidebar.radio(
     "Επιλογή Λειτουργίας", 
     ("Ανίχνευση Απόβλητων 🗑️", "Κουίζ Ανακύκλωσης 📝")
 )
 
-# Set labels
+# Define recycling sets
 recyclable_set = {"plastic", "paper", "metal", "glass", "cardboard", "bottle", "can"}
 non_recyclable_set = {"organic", "hazardous", "styrofoam", "food waste", "battery", "diaper"}
 
@@ -70,17 +90,18 @@ if section == "Ανίχνευση Απόβλητων 🗑️":
     st.write("Παρακαλώ ανεβάστε μια εικόνα για ανάλυση. 📸")
     
     uploaded_file = st.file_uploader("Επιλέξτε μια εικόνα", type=["png", "jpg", "jpeg"])
+    image = None
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
+    else:
+        st.warning("Παρακαλώ ανεβάστε μια εικόνα για ανάλυση.")
+
+    if image:
         st.image(image, caption="Επιλεγμένη Εικόνα", use_container_width=True)
-
-        # Load model and processor from local folders
-        model = CLIPModel.from_pretrained("clip_model")
-        processor = CLIPProcessor.from_pretrained("clip_processor")
-
+        # Model and processor setup
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        model = model.to(device)
-
+        model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(device)
+        processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
         candidate_texts = list(recyclable_set | non_recyclable_set)
         inputs = processor(text=candidate_texts, images=image, return_tensors="pt", padding=True).to(device)
         outputs = model(**inputs)
@@ -90,8 +111,6 @@ if section == "Ανίχνευση Απόβλητων 🗑️":
         best_label = candidate_texts[best_idx]
         category = "Ανακυκλώσιμο ♻️" if best_label in recyclable_set else "Μη ανακυκλώσιμο 🚫"
         st.write(f"**Κατηγορία:** {category}")
-    else:
-        st.warning("Παρακαλώ ανεβάστε μια εικόνα για ανάλυση.")
 
 # --------------------------
 # Section 2: Recycling Quiz
@@ -100,6 +119,7 @@ elif section == "Κουίζ Ανακύκλωσης 📝":
     st.subheader("Κουίζ Ανακύκλωσης 📝")
     st.write("Δοκιμάστε τις γνώσεις σας για την ανακύκλωση! 🌍")
     
+    # Expanded quiz questions list
     questions = [
         {"question": "Ποιο από τα παρακάτω είναι ανακυκλώσιμο;", 
          "options": ["Χαρτί 📄", "Φαγητά 🍲", "Μπαταρίες 🔋", "Οργανικά απόβλητα 🥕"], 
