@@ -472,7 +472,7 @@ st.markdown(
             <a href='https://x.com/ecoguard_ai'>🐦 Twitter</a>
             <a href='https://www.tiktok.com/@ecoguardai'>⌚ TikTok</a>
         </div>
-        <p style='margin-top:20px; font-size:0.9rem; color:#666;'>© 2023 EcoGuard AI - Όλα τα δικαιώματα διατηρούνται</p>
+        <p style='margin-top:20px; font-size:0.9rem; color:#666;'>© 2025 EcoGuard AI - Όλα τα δικαιώματα διατηρούνται</p>
     </div>
     """,
     unsafe_allow_html=True
