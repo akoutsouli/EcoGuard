@@ -178,7 +178,7 @@ if section == "Ανίχνευση Απόβλητων 🗑️":
     if uploaded_file:
         with st.spinner("Ανάλυση εικόνας... 🔍"):
             image = Image.open(uploaded_file)
-            st.image(image, caption="Η εικόνα σας", use_column_width=True)
+            st.image(image, caption="Η εικόνα σας", use_container_width=True)
             
             # Combine labels with emojis
             candidate_labels = list(recyclable_set.keys()) + list(non_recyclable_set.keys())
@@ -467,9 +467,10 @@ st.markdown(
     <div style='text-align:center; padding:20px 0;'>
         <p>🌿 Κάντε τον πλανήτη πιο πράσινο μαζί μας!</p>
         <div style='display:flex; justify-content:center; gap:15px; margin-top:10px;'>
-            <a href='#'>📱 Instagram</a>
-            <a href='#'>📘 Facebook</a>
-            <a href='#'>🐦 Twitter</a>
+            <a href='https://www.instagram.com/ecoguardai/'>📱 Instagram</a>
+            <a href='https://www.facebook.com/ecoguardai'>📘 Facebook</a>
+            <a href='https://x.com/ecoguard_ai'>🐦 Twitter</a>
+            <a href='https://www.tiktok.com/@ecoguardai'>⌚ TikTok</a>
         </div>
         <p style='margin-top:20px; font-size:0.9rem; color:#666;'>© 2023 EcoGuard AI - Όλα τα δικαιώματα διατηρούνται</p>
     </div>
